@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HIMIKO Downloader</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+margin:0;
+height:100vh;
+padding:18px;
+display:flex;
+justify-content:center;
+align-items:center;
+position:relative;
+overflow:hidden;
+}
+
+.bg-top{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:50%;
+background:
+linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)),
+url("admin.jpg") center/cover no-repeat;
+z-index:-2;
+}
+
+.bg-bottom{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+height:70%;
+background:linear-gradient(135deg,#667eea,#764ba2);
+z-index:-3;
+}
+
+.card{
+width:92%;
+max-width:420px;
+min-height:440px;
+padding:32px 22px;
+border-radius:26px;
+backdrop-filter: blur(18px);
+background: rgba(255,255,255,0.12);
+box-shadow:0 20px 40px rgba(0,0,0,0.25);
+color:white;
+}
+
+h1{
+font-size:22px;
+margin-bottom:22px;
+text-align:center;
+}
+
+.input-box{
+width:100%;
+padding:16px;
+border-radius:14px;
+border:none;
+outline:none;
+margin-bottom:18px;
+}
+
+.platforms{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:12px;
+margin-bottom:20px;
+}
+
+.platform{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+padding:14px 0;
+border-radius:14px;
+background:rgba(255,255,255,0.15);
+cursor:pointer;
+transition:.2s;
+}
+
+.platform img{
+width:22px;
+height:22px;
+}
+
+.platform.active{
+background:white;
+color:#333;
+font-weight:600;
+}
+
+button{
+width:100%;
+padding:16px;
+border:none;
+border-radius:16px;
+background:white;
+color:#333;
+font-weight:600;
+font-size:16px;
+cursor:pointer;
+}
+
+.desc{
+margin-top:18px;
+font-size:13px;
+text-align:center;
+}
+
+.footer{
+font-size:12px;
+text-align:center;
+margin-top:12px;
+}
+
+#preview iframe{
+width:100%;
+height:200px;
+border:none;
+border-radius:12px;
+margin-top:15px;
+}
+
+#result iframe{
+width:100%;
+height:220px;
+border:none;
+border-radius:12px;
+margin-top:15px;
+background:white;
+}
+
+/* ===== Loading Animation ===== */
+
+.loader{
+margin:20px auto;
+border:5px solid rgba(255,255,255,0.3);
+border-top:5px solid white;
+border-radius:50%;
+width:40px;
+height:40px;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg-top"></div>
+<div class="bg-bottom"></div>
+
+<div class="card">
+
+<h1> HIMIKO Downloader</h1>
+
+<input id="url" class="input-box" placeholder="Tempel link video di sini..." oninput="showPreview()" />
+
+<div class="platforms">
+
+<div class="platform active" onclick="setPlatform(this,'youtube')">
+<img src="yt.png"> YouTube
+</div>
+
+<div class="platform" onclick="setPlatform(this,'tiktok')">
+<img src="tt.jpg"> TikTok
+</div>
+
+<div class="platform" onclick="setPlatform(this,'facebook')">
+<img src="fb.jpg"> Facebook
+</div>
+
+</div>
+
+<button onclick="downloadVideo()">Download Sekarang</button>
+
+<div id="preview"></div>
+
+<div id="result"></div>
+
+<div class="desc">
+HIMIKO Downloader adalah tools gratis untuk download video dari
+YouTube, TikTok, dan Facebook tanpa watermark.
+</div>
+
+<div class="footer">MP4 • MP3 • Gratis</div>
+
+</div>
+
+<script>
+
+let selected="youtube";
+
+function setPlatform(el,name){
+document.querySelectorAll(".platform")
+.forEach(p=>p.classList.remove("active"));
+
+el.classList.add("active");
+selected=name;
+}
+
+/* ===== Preview Video ===== */
+
+function showPreview(){
+
+const url=document.getElementById("url").value;
+
+if(selected!=="youtube") return;
+
+let id=url.split("v=")[1];
+
+if(!id) return;
+
+id=id.split("&")[0];
+
+document.getElementById("preview").innerHTML=
+`<iframe src="https://www.youtube.com/embed/${id}"></iframe>`;
+
+}
+
+/* ===== Download ===== */
+
+function downloadVideo(){
+
+const url=document.getElementById("url").value;
+
+if(!url){
+alert("Masukkan link video dulu tolol");
+return;
+}
+
+/* loading */
+
+document.getElementById("result").innerHTML=
+`<div class="loader"></div>`;
+
+/* API */
+
+let api="https://api.vevioz.com/api/button/mp4?url="+encodeURIComponent(url);
+
+setTimeout(()=>{
+
+document.getElementById("result").innerHTML=
+`<iframe src="${api}"></iframe>`;
+
+},1200);
+
+}
+
+</script>
+
+</body>
+</html>
